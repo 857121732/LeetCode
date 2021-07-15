@@ -1,6 +1,9 @@
 package learning
 
-import "sort"
+import (
+	"sort"
+	"strings"
+)
 
 // 153. 寻找旋转排序数组中的最小值
 func findMin(nums []int) int {
@@ -149,24 +152,50 @@ func findSumK(nums []int, k int) [][]int {
 //"b"
 //"xywrrmp"
 //"xywrrmu#p"
+func handleBack(s string, idx int) int {
+	backNum := 0
+	for idx >= 0 {
+		if s[idx] != '#' && backNum == 0 {
+			return idx
+		}
+		if s[idx] == '#' {
+			backNum++
+		} else {
+			backNum--
+		}
+		idx--
+	}
+	return idx
+}
 func backspaceCompare(s string, t string) bool {
-	a, b := len(s)-1, len(t)-1
+	a, b := handleBack(s, len(s)-1), handleBack(t, len(t)-1)
 	for a >= 0 && b >= 0 {
-		if s[a] == '#' {
-			a -= 2
-			continue
-		}
-		if s[b] == '#' {
-			b -= 2
-			continue
-		}
-
-		if s[a] != s[b] {
+		if s[a] != t[b] {
 			return false
 		}
 		a--
 		b--
+
+		a = handleBack(s, a)
+		b = handleBack(t, b)
 	}
 
-	return a == b
+	return a < 0 && b < 0
+}
+
+func backspace(s string) string {
+	a := make([]byte, 0, len(s))
+	for _, v := range s {
+		if v == '#' {
+			if len(a) > 0 {
+				a = a[:len(a)-1]
+			}
+			continue
+		}
+		a = append(a, byte(v))
+	}
+	return s[:1]
+}
+func backspaceCompare1(s string, t string) bool {
+	return strings.Compare(backspace(s), backspace(t)) == 0
 }
