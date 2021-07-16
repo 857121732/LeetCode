@@ -116,3 +116,69 @@ func checkEqual(a, b []int) bool {
 	}
 	return true
 }
+
+// 713. 乘积小于K的子数组 TODO bug
+func numSubarrayProductLessThanK(nums []int, k int) int {
+	if len(nums) == 0 {
+		return 0
+	}
+	left, right := 0, 0
+	curMultiply, limit := float64(nums[left]), float64(k)
+	// 获取最大起始区间 左值
+	for left < len(nums) && float64(nums[left]) >= limit {
+		left++
+	}
+	if left >= len(nums) {
+		return 0
+	}
+	right = left
+	// 获取最大起始区间 右值
+	for right < len(nums)-1 {
+		tmp := curMultiply * float64(nums[right+1])
+		if tmp >= limit {
+			break
+		}
+		curMultiply = tmp
+		right++
+	}
+	res := getSubarrayNum(right - left + 1)
+	// 开始滑动
+	for left < len(nums)-1 && right < len(nums) {
+		curMultiply /= float64(nums[left])
+		left++
+		if right < left {
+			for left < len(nums) && float64(nums[left]) >= limit {
+				left++
+			}
+			curMultiply = float64(nums[left])
+			right = left
+		}
+
+		newRight := right
+		for newRight < len(nums)-1 {
+			tmp := curMultiply * float64(nums[newRight+1])
+			if tmp >= limit {
+				break
+			}
+			newRight++
+			curMultiply = tmp
+		}
+		if newRight >= left {
+			res += getSubarrayNum(newRight - left + 1)
+		}
+		if newRight > right {
+			res -= getSubarrayNum(getDuplicateInterval(left, right)) // 删除重复区间的重复子数组
+			right = newRight
+		}
+	}
+	return res
+}
+func getDuplicateInterval(newLeft, oldRight int) int {
+	if oldRight < newLeft {
+		return 0
+	}
+	return oldRight - newLeft + 1
+}
+func getSubarrayNum(arrLen int) int {
+	return (arrLen * (arrLen + 1)) >> 1
+}

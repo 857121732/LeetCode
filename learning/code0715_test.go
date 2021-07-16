@@ -21,10 +21,8 @@ func Test_findAnagrams(t *testing.T) {
 	fmt.Println(findAnagrams("abab", "ab"))
 }
 
-func Test_slipSubarray(t *testing.T) {
-	fmt.Println(slipSubarray([]int{10, 5, 2, 6}, 0, 0, 10, 100))
-}
-
 func Test_numSubarrayProductLessThanK(t *testing.T) {
+	fmt.Println(numSubarrayProductLessThanK([]int{10, 5, 5, 2, 6}, 100))
 	fmt.Println(numSubarrayProductLessThanK([]int{10, 5, 2, 6}, 100))
+	fmt.Println(numSubarrayProductLessThanK([]int{10, 9, 10, 4, 3, 8, 3, 3, 6, 2, 10, 10, 9, 3}, 19))
 }
